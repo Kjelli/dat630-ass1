@@ -1,23 +1,28 @@
 package websearch;
+
 public class Filter {
 	private static final int EQUAL_TO = 1, GREATER_THAN = 2, LESS_THAN = 3,
-			GREATER_OR_EQUAL_TO = 4, LESS_OR_EQUAL_TO = 5;
-	
+			GREATER_OR_EQUAL_TO = 4, LESS_OR_EQUAL_TO = 5, EITHER = 6,
+			NEITHER = 7;
+
 	// Parent search - useful in making the fluent api
 	private Search search;
 
-	//Name of the Adult's attribute (key) to check against value
+	// Name of the Adult's attribute (key) to check against value
 	private String attributeName;
-	
+
 	// Determines what operator the filter will use in matching
 	private int operator;
-	
+
 	// The attribute will be compared against this value
 	private Object value;
-	
+
+	// If multiple values are to be compared, this array is used
+	private Object[] values;
+
 	// The result of the match
 	private Boolean result;
-	
+
 	// By using the .not() function, it will negate the filter
 	private Boolean negate = false;
 
@@ -31,7 +36,7 @@ public class Filter {
 		this.attributeName = attributeName;
 		return this;
 	}
-	
+
 	// Negate the filter (equalTo(val) -> not().equalTo(val))
 	public Filter not() {
 		negate ^= true;
@@ -72,19 +77,62 @@ public class Filter {
 		this.value = value;
 		return search;
 	}
-	
-	// Match method. This is called from the search class when all filters are sequentially applied to each adult object.
+
+	public Search either(Object... values) {
+		operator = EITHER;
+		this.values = values;
+		return search;
+	}
+
+	public Search neither(Object... values) {
+		operator = NEITHER;
+		this.values = values;
+		return search;
+	}
+
+	// Match method. This is called from the search class when all filters are
+	// sequentially applied to each adult object.
 	public Filter match(Adult a) {
 		if (attributeName == null) {
 			throw new NullPointerException("No attribute to check!");
 		}
-		
-		if(a.get(attributeName) == null){
+
+		if (a.get(attributeName) == null) {
 			result = value == null;
 			return this;
 		}
-		
+
 		switch (operator) {
+		case EITHER:
+			result = false;
+			for (Object o : values) {
+				if (a.get(attributeName) == null) {
+					if (o == null) {
+						result = true;
+						break;
+					}
+				} else if (a.get(attributeName) == o
+						|| a.get(attributeName).equals(o)) {
+					result = true;
+					break;
+				}
+			}
+			break;
+		case NEITHER:
+			result = true;
+			for (Object o : values) {
+				if (a.get(attributeName) == null) {
+					if (o == null) {
+						result = false;
+						break;
+					}
+				} else if (a.get(attributeName) == o
+						|| a.get(attributeName).equals(o)) {
+					result = false;
+					break;
+				}
+			}
+			break;
 		case EQUAL_TO:
 			result = (a.get(attributeName) == value || a.get(attributeName)
 					.equals(value));
@@ -111,14 +159,30 @@ public class Filter {
 	public Boolean result() {
 		return result ^ negate;
 	}
-	
+
 	// Useful when printing filters.
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("");
 
-		String operatorText;
+		String operatorText = "";
 		switch (operator) {
+		case EITHER:
+			operatorText += "either ";
+			for(int i = 0; i < values.length-2; i ++){
+				operatorText += String.valueOf(values[i])+", ";
+			}
+			operatorText += values[values.length-2] + " or " + values[values.length-1];
+			break;
+		
+		case NEITHER:
+			operatorText += "neither ";
+			for(int i = 0; i < values.length-2; i ++){
+				operatorText += String.valueOf(values[i])+", ";
+			}
+			operatorText += values[values.length-2] + " nor " + values[values.length-1];
+			break;
+		
 		case EQUAL_TO:
 			operatorText = "";
 			break;
@@ -138,8 +202,8 @@ public class Filter {
 			operatorText = "OPERATOR!?";
 		}
 
-		sb.append(attributeName.toUpperCase() + " is "
-				+ (negate ? "not " : "") + operatorText + value);
+		sb.append(attributeName.toUpperCase() + " is " + (negate ? "not " : "")
+				+ operatorText + ((operator == EITHER || operator == NEITHER) ? "" : value));
 
 		return sb.toString();
 	}

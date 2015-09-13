@@ -38,6 +38,9 @@ public class Search {
 		Map<Object, Double> correlations = new LinkedHashMap<Object, Double>();
 		for (String att : Adult.ATT) {
 			Map<Object, Double> temp = valuesFor(att);
+			if (temp.keySet().isEmpty()) {
+				continue;
+			}
 			Object key = (temp.keySet().iterator().next());
 			double value = (double) temp.get(key);
 			double ratio = (value * 100.0f / originalList.size()), relratio = (value * 100.0f / results
@@ -64,7 +67,7 @@ public class Search {
 
 		for (Adult a : results) {
 			Object key = a.get(attributeName);
-			map.put(key, map.get(key) == null ? 0 : map.get(key) + 1);
+			map.put(key, map.get(key) == null ? 1 : map.get(key) + 1);
 		}
 
 		// Sort
@@ -82,7 +85,8 @@ public class Search {
 			@Override
 			public int compare(Entry<Object, Double> entry1,
 					Entry<Object, Double> entry2) {
-				if (entry1.getKey() == null)
+				if (entry1.getKey() instanceof String
+						&& ((String) entry1.getKey()).equals("undefined"))
 					return -1;
 				return Double.compare(entry2.getValue(), entry1.getValue());
 			}
@@ -127,7 +131,7 @@ public class Search {
 		return this;
 	}
 
-	//Retrieve the list
+	// Retrieve the list
 	public ArrayList<Adult> toList() {
 		return results;
 	}
