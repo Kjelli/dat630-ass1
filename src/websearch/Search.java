@@ -37,7 +37,7 @@ public class Search {
 	public Map<Object, Double> highCorrelations() {
 		Map<Object, Double> correlations = new LinkedHashMap<Object, Double>();
 		for (String att : Adult.ATT) {
-			Map<Object, Double> temp = valuesFor(att);
+			Map<Object, Double> temp = valuesFor(att, true);
 			if (temp.keySet().isEmpty()) {
 				continue;
 			}
@@ -62,7 +62,7 @@ public class Search {
 
 	// Generate a map containing all values of an attribute and the respective
 	// frequency
-	public Map<Object, Double> valuesFor(String attributeName) {
+	public Map<Object, Double> valuesFor(String attributeName, boolean sort) {
 		Map<Object, Double> map = new LinkedHashMap<Object, Double>();
 
 		for (Adult a : results) {
@@ -71,7 +71,8 @@ public class Search {
 		}
 
 		// Sort
-		map = sort(map);
+		if (sort)
+			map = sort(map);
 
 		return map;
 	}
@@ -87,7 +88,7 @@ public class Search {
 					Entry<Object, Double> entry2) {
 				if (entry1.getKey() instanceof String
 						&& ((String) entry1.getKey()).equals("undefined"))
-					return -1;
+					return 1;
 				return Double.compare(entry2.getValue(), entry1.getValue());
 			}
 		});

@@ -34,6 +34,10 @@ public class DecisionTree {
 		if ((int) a.get(HOURS_PER_WEEK) <= 40) {
 			score -= 58.33f + 12.24;
 		}
+		
+		if((int) a.get(CAPITAL_GAIN) > 0){
+			score += -3.18 + 5.15; 
+		}
 
 		if ((int) a.get(EDUCATION_NUM) < 9) {
 			score -= 39.42f;
