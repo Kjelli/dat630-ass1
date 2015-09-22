@@ -158,6 +158,8 @@ public class Main {
 			if (line.isEmpty())
 				continue;
 			adults.add(new Adult(line));
+			
+			// TODO: think of the ? (missing) attributes
 		}
 
 		scan.close();
