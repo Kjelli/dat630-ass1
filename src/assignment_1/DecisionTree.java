@@ -21,22 +21,29 @@ public class DecisionTree {
 	static final int POSITIVE = 0, NEGATIVE = 1;
 	static final int FALSE = 0, TRUE = 1;
 
-	static final String TRUE_LABEL = ">50k", FALSE_LABEL = "<=50k";
+	static final String TRUE_LABEL = ">50K", FALSE_LABEL = "<=50K";
 
 	File output;
-	boolean fileError = false;
-	boolean training = false;
+	boolean training;
+	String filename;
+
+	public DecisionTree(boolean training, String filename) {
+		this.training = training;
+		this.filename = filename;
+	}
 
 	// Run this with the data interpreted from the textfiles.
 	public DecisionTreeResult estimate(ArrayList<Adult> data) {
 		int correctCount = 0;
 		int[][] confusion = new int[2][2];
+		int lineCount = 1;
+		boolean fileError = false;
 
-		output = new File("task1.out");
+		output = new File(filename);
 		if (output.exists()) {
 			output.delete();
 		}
-		
+
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter(output);
@@ -44,6 +51,14 @@ public class DecisionTree {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			fileError = true;
+		}
+
+		if (!fileError) {
+			try {
+				fw.write("Id,Target\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+			}
 		}
 
 		for (Adult a : data) {
@@ -54,7 +69,8 @@ public class DecisionTree {
 			}
 			if (!fileError) {
 				try {
-					fw.write((estimate ? ">50k\n" : "<=50k\n"));
+					fw.write((lineCount++) + ","
+							+ (estimate ? ">50K\n" : "<=50K\n"));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 				}
@@ -100,7 +116,7 @@ public class DecisionTree {
 		}
 
 		if (a.get(EDUCATION).equals("HS-grad")) {
-			score += -1;
+			score += -3;
 		}
 
 		if ((int) a.get(HOURS_PER_WEEK) <= 40) {
@@ -108,14 +124,14 @@ public class DecisionTree {
 		}
 
 		if ((int) a.get(CAPITAL_GAIN) > 0) {
-			score += 1;
+			score += 2;
 		}
 
 		if ((int) a.get(EDUCATION_NUM) < 9) {
 			score += -2;
 		}
 		if (a.get(MARITAL_STATUS).equals("Never-married")) {
-			score += -1;
+			score += -2;
 		}
 
 		if (a.get(MARITAL_STATUS).equals("Married-civ-spouse")) {

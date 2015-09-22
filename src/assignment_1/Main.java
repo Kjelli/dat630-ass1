@@ -1,15 +1,15 @@
 package assignment_1;
 
+import static assignment_1.Adult.ATT;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
 import assignment_1.DecisionTree.DecisionTreeResult;
-import static assignment_1.Adult.*;
 
 public class Main {
 
@@ -24,13 +24,17 @@ public class Main {
 	static ArrayList<Adult> data;
 
 	public static void main(String[] args) {
-		File file = new File("adult.test");
+		File file = new File("adult.data");
+		String outputFilename = "output/task1.out";
+		boolean training = true;
 		data = readLines(file);
 
-		//search();
+		// search();
 
-		DecisionTreeResult result = new DecisionTree().estimate(data);
-		System.out.println(result == null ? "Currently not in training set.. see output" : result);
+		DecisionTreeResult result = new DecisionTree(training, outputFilename).estimate(data);
+		System.out
+				.println(result == null ? "Currently not in training set.. see output"
+						: result);
 
 	}
 
@@ -73,6 +77,7 @@ public class Main {
 		// printHighCorrelations(search, 99);
 	}
 
+	@SuppressWarnings("unused")
 	private static void printHighCorrelations(Search search, int take) {
 		StringBuilder bs = new StringBuilder("");
 
@@ -158,7 +163,7 @@ public class Main {
 			if (line.isEmpty())
 				continue;
 			adults.add(new Adult(line));
-			
+
 			// TODO: think of the ? (missing) attributes
 		}
 
