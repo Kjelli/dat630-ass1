@@ -1,4 +1,4 @@
-package websearch;
+package assignment_1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import websearch.DecisionTree.DecisionTreeResult;
-import static websearch.Adult.*;
+import assignment_1.DecisionTree.DecisionTreeResult;
+import static assignment_1.Adult.*;
 
 public class Main {
 
@@ -24,21 +24,19 @@ public class Main {
 	static ArrayList<Adult> data;
 
 	public static void main(String[] args) {
-		File file = new File("adult.data");
+		File file = new File("adult.test");
 		data = readLines(file);
 
-		search();
+		//search();
 
 		DecisionTreeResult result = new DecisionTree().estimate(data);
-		System.out.println("***************************");
-		System.out.println("Your decision tree scored:\n" + result.count
-				+ " out of " + result.total + "! ("
-				+ String.format("%.2f%%)", result.ratio * 100.0f));
+		System.out.println(result);
 
 	}
 
+	@SuppressWarnings("unused")
 	private static void search() {
-		Search search = new Search().from(data)
+		// Search search = new Search().from(data)
 		// .filter().attribute(HOURS_PER_WEEK).greaterOrEqualTo(40)
 		// .filter().attribute(EDUCATION).either("Bachelors","HS-grad")
 		// .filter().attribute(EDUCATION_NUM).greaterOrEqualTo(10)
@@ -46,31 +44,31 @@ public class Main {
 		// .filter().attribute(OCCUPATION).either("Exec-managerial","Prof-specialty","Sales")
 		// .filter().attribute(CAPITAL_LOSS).lessOrEqualTo(0)
 		// .filter().attribute(CAPITAL_GAIN).greaterThan(0)
-		// .filter().attribute(MARITAL_STATUS).equalTo("Never-married")
-		// .filter().attribute(NATIVE_COUNTRY).equalTo("United-States")
+		// .filter().attribute(MARITAL_STATUS).equalTo("Divorced")
+		// .filter().attribute(NATIVE_COUNTRY).not().equalTo("United-States")
 		// .filter().attribute(RACE).equalTo("White")
-		// .filter().attribute(AGE).greaterThan(60)
-		// .filter().attribute(RELATIONSHIP).equalTo("Husband")
-		 .filter().attribute(OVER50K).equalTo(true)
-				//.filter().attribute(SEX).equalTo("Female")
-				.search();
+		// .filter().attribute(AGE).not().greaterThan(19)
+		// .filter().attribute(RELATIONSHIP).equalTo("Wife")
+		// .filter().attribute(OVER50K).equalTo(true)
+		// .filter().attribute(SEX).equalTo("Female")
+		// .search();
 
-		Search search2 = new Search().from(data)
-				.filter().attribute(OVER50K).equalTo(false)
-				.search();
+		// Search search2 = new Search().from(data)
+		// .filter().attribute(OVER50K).equalTo(false)
+		// .search();
 
-		String C = HOURS_PER_WEEK;
-		
-		System.out.println("Over50k");
-		printResultsMeta(search);
-		Histogram.drawCategorical(search, C);
-		System.out.println("Under 50k");
-		printResultsMeta(search2);
-		Histogram.drawCategorical(search2, C);
+		// String C = HOURS_PER_WEEK;
 
-		 //printResultsMeta(search);
+		// System.out.println("Over50k");
+		// printResultsMeta(search);
+		// Histogram.drawCategorical(search, C);
+		// System.out.println("Under 50k");
+		// printResultsMeta(search2);
+		// Histogram.drawCategorical(search2, C);
 
-		// printAttributeResults(search, OVER50K, 3);
+		// printResultsMeta(search);
+
+		// printAttributeResults(search, SEX, 3);
 
 		// printHighCorrelations(search, 99);
 	}

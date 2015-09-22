@@ -1,4 +1,4 @@
-package websearch;
+package assignment_1;
 
 public class Filter {
 	private static final int EQUAL_TO = 1, GREATER_THAN = 2, LESS_THAN = 3,

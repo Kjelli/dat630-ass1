@@ -1,4 +1,4 @@
-package websearch;
+package assignment_1;
 
 import java.util.Map;
 import java.util.Map.Entry;

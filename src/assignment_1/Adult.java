@@ -1,4 +1,4 @@
-package websearch;
+package assignment_1;
 
 import java.util.HashMap;
 
