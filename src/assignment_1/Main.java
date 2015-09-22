@@ -30,7 +30,7 @@ public class Main {
 		//search();
 
 		DecisionTreeResult result = new DecisionTree().estimate(data);
-		System.out.println(result);
+		System.out.println(result == null ? "Currently not in training set.. see output" : result);
 
 	}
 
