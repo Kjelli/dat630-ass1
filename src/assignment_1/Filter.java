@@ -138,16 +138,16 @@ public class Filter {
 					.equals(value));
 			break;
 		case LESS_THAN:
-			result = (int) a.get(attributeName) < (double) (value)*1.0f;
+			result = (int) a.get(attributeName) < (int) value;
 			break;
 		case LESS_OR_EQUAL_TO:
-			result = (int) a.get(attributeName) < (double) (value)*1.0f;
+			result = (int) a.get(attributeName) < (int) (value);
 			break;
 		case GREATER_THAN:
-			result = (int) a.get(attributeName) >= (double) (value)*1.0f;
+			result = (int) a.get(attributeName) >= (int) (value);
 			break;
 		case GREATER_OR_EQUAL_TO:
-			result = (int) a.get(attributeName) >= (double) (value)*1.0f;
+			result = (int) a.get(attributeName) >= (int) (value);
 			break;
 		default:
 			throw new IllegalArgumentException();
@@ -169,20 +169,22 @@ public class Filter {
 		switch (operator) {
 		case EITHER:
 			operatorText += "either ";
-			for(int i = 0; i < values.length-2; i ++){
-				operatorText += String.valueOf(values[i])+", ";
+			for (int i = 0; i < values.length - 2; i++) {
+				operatorText += String.valueOf(values[i]) + ", ";
 			}
-			operatorText += values[values.length-2] + " or " + values[values.length-1];
+			operatorText += values[values.length - 2] + " or "
+					+ values[values.length - 1];
 			break;
-		
+
 		case NEITHER:
 			operatorText += "neither ";
-			for(int i = 0; i < values.length-2; i ++){
-				operatorText += String.valueOf(values[i])+", ";
+			for (int i = 0; i < values.length - 2; i++) {
+				operatorText += String.valueOf(values[i]) + ", ";
 			}
-			operatorText += values[values.length-2] + " nor " + values[values.length-1];
+			operatorText += values[values.length - 2] + " nor "
+					+ values[values.length - 1];
 			break;
-		
+
 		case EQUAL_TO:
 			operatorText = "";
 			break;
@@ -203,7 +205,8 @@ public class Filter {
 		}
 
 		sb.append(attributeName.toUpperCase() + " is " + (negate ? "not " : "")
-				+ operatorText + ((operator == EITHER || operator == NEITHER) ? "" : value));
+				+ operatorText
+				+ ((operator == EITHER || operator == NEITHER) ? "" : value));
 
 		return sb.toString();
 	}

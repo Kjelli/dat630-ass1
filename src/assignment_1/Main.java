@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import assignment_1.DecisionTree.DecisionTreeResult;
-
 public class Main {
 
 	public static final String AGE = ATT[0], WORKCLASS = ATT[1],
@@ -32,17 +30,14 @@ public class Main {
 
 		search();
 
-		DecisionTreeResult result = new DecisionTree(training, outputFilename)
+		DecisionTreeResult result = new GainTree(training, outputFilename)
 				.estimate(data);
 
-		GainCalculator gc = new GainCalculator();
-
-		double gain = gc.computeGain(data, AGE);
-		System.out.println(gain);
-		// System.out
-		// .println(result == null ?
-		// "Currently not in training set.. see output"
-		// : result);
+		// double gain = new GainCalculator().computeGain(data, AGE);
+		// System.out.println(gain);
+		System.out
+				.println(result == null ? "Currently not in training set.. see output"
+						: result);
 
 	}
 
@@ -79,7 +74,7 @@ public class Main {
 
 		// printResultsMeta(search);
 
-		// printAttributeResults(search, AGE, 3200);
+		printAttributeResults(search, MARITAL_STATUS, 36000);
 
 		// printHighCorrelations(search, 99);
 	}
