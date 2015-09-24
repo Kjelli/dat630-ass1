@@ -68,6 +68,7 @@ public class Search {
 
 		for (Adult a : results) {
 			Object key = a.get(attributeName);
+			
 			map.put(key, map.get(key) == null ? 1 : map.get(key) + 1);
 		}
 

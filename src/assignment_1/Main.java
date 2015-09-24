@@ -28,16 +28,25 @@ public class Main {
 		boolean training = true;
 		data = readLines(file);
 
-		search();
+		//search();
 
-		DecisionTreeResult result = new GainTree(training, outputFilename)
-				.estimate(data);
-
-		// double gain = new GainCalculator().computeGain(data, AGE);
-		// System.out.println(gain);
-		System.out
-				.println(result == null ? "Currently not in training set.. see output"
-						: result);
+		// DecisionTreeResult result = new GainTree(training, outputFilename)
+		// .estimate(data);
+		
+		//System.out.println(new GainCalculator().computeGain(data, OCCUPATION));
+		
+		
+		for (String s : ATT) {
+			double gain = new GainCalculator().computeGain(data, s);
+			System.out.println(s+": "+gain);
+		}
+		
+		
+		
+		// System.out
+		// .println(result == null ?
+		// "Currently not in training set.. see output"
+		// : result);
 
 	}
 
@@ -74,7 +83,7 @@ public class Main {
 
 		// printResultsMeta(search);
 
-		printAttributeResults(search, MARITAL_STATUS, 36000);
+		printAttributeResults(search, WORKCLASS, 36000);
 
 		// printHighCorrelations(search, 99);
 	}

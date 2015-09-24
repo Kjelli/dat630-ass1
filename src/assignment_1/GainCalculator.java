@@ -1,10 +1,12 @@
 package assignment_1;
 
+import static assignment_1.Main.OVER50K;
+
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static assignment_1.Main.OVER50K;
+import java.util.Map.Entry;
 
 public class GainCalculator {
 
@@ -28,79 +30,88 @@ public class GainCalculator {
 			}
 		}
 
-		if (numeric) {
+		Map<Object, Double> map = search.valuesFor(attrName, true);
 
-			Object median = mean(search, attrName);
+		double total = 0;
 
-			System.out.println(median);
-
-			int underPlus = new Search().from(data).filter()
-					.attribute(attrName).lessThan(median).filter()
-					.attribute(OVER50K).equalTo(true).search().toList().size();
-
-			System.out.println("underPlus: " + underPlus);
-
-			int overPlus = new Search().from(data).filter().attribute(attrName)
-					.greaterThan(median).filter().attribute(OVER50K)
-					.equalTo(true).search().toList().size();
-
-			System.out.println("overPlus: " + overPlus);
-
-			int underMinus = new Search().from(data).filter()
-					.attribute(attrName).lessThan(median).filter()
-					.attribute(OVER50K).equalTo(false).search().toList().size();
-
-			System.out.println("underMinus: " + underMinus);
-
-			int overMinus = new Search().from(data).filter()
-					.attribute(attrName).greaterOrEqualTo(median).filter()
-					.attribute(OVER50K).equalTo(false).search().toList().size();
-
-			System.out.println("overMinus: " + overMinus);
-
-			int total = data.size();
-			int underTotal = underPlus + underMinus;
-			int overTotal = overPlus + overMinus;
-
-			System.out.println("total: " + total);
-
-			double underEntropy = -underPlus * 1.0f / underTotal
-					* Math.log10(underPlus * 1.0f / underTotal) / Math.log10(2)
-					- underMinus * 1.0f / underTotal
-					* Math.log10(underMinus * 1.0f / underTotal)
-					/ Math.log10(2);
-
-			System.out.println("underEntropy: " + underEntropy);
-
-			double overEntropy = -overPlus * 1.0f / overTotal
-					* Math.log10(overPlus * 1.0f / overTotal) / Math.log10(2)
-					- overMinus * 1.0f / overTotal
-					* Math.log10(overMinus * 1.0f / overTotal) / Math.log10(2);
-
-			System.out.println("overEntropy: " + overEntropy);
-
-			double routeEntropy = -underTotal * 1.0f / total
-					* Math.log10(underTotal * 1.0f / total) / Math.log10(2)
-					- overTotal * 1.0f / total
-					* Math.log10(overTotal * 1.0f / total) / Math.log10(2);
-
-			System.out.println("routeEntropy: " + routeEntropy);
-
-			double gain = routeEntropy
-					- (underTotal * 1.0f / total * underEntropy + overTotal
-							* 1.0f / total * overEntropy);
-			return gain;
-		} else {
-			Main.printAttributeResults(search, attrName, 10000);
+		for (double d : map.values()) {
+			total += d;
 		}
 
-		return 0.0f;
+		if (numeric) {
+
+			Object mean = mean(search, attrName);
+
+			double underPlus = new Search().from(data).filter()
+					.attribute(attrName).lessThan(mean).filter()
+					.attribute(OVER50K).equalTo(true).search().toList().size();
+
+			double overPlus = new Search().from(data).filter()
+					.attribute(attrName).greaterThan(mean).filter()
+					.attribute(OVER50K).equalTo(true).search().toList().size();
+
+			double underMinus = new Search().from(data).filter()
+					.attribute(attrName).lessThan(mean).filter()
+					.attribute(OVER50K).equalTo(false).search().toList().size();
+
+			double overMinus = new Search().from(data).filter()
+					.attribute(attrName).greaterOrEqualTo(mean).filter()
+					.attribute(OVER50K).equalTo(false).search().toList().size();
+
+			double under_before = new Search().from(data).filter()
+					.attribute(OVER50K).equalTo(false).search().toList().size();
+			double over_before = data.size() - under_before;
+
+			double entropy_before = entropy(under_before, over_before);
+
+			double entropy_after = (overPlus + overMinus) / total
+					* entropy(overMinus, overPlus) + (underPlus + underMinus)
+					/ total * entropy(underMinus, underPlus);
+
+			double gain = entropy_before - entropy_after;
+
+			return gain;
+		} else {
+
+			double under_before = new Search().from(data).filter()
+					.attribute(OVER50K).equalTo(false).search().toList().size();
+			double over_before = data.size() - under_before;
+
+			double entropy_before = entropy(under_before, over_before);
+			double entropy_after = 0;
+
+			for (Entry<Object, Double> entry : map.entrySet()) {
+
+				double over = new Search().from(data).filter()
+						.attribute(attrName).equalTo(entry.getKey()).filter()
+						.attribute(OVER50K).equalTo(true).search().toList()
+						.size();
+
+				double under = new Search().from(data).filter()
+						.attribute(attrName).equalTo(entry.getKey()).filter()
+						.attribute(OVER50K).equalTo(false).search().toList()
+						.size();
+
+				entropy_after += (over + under) / total * entropy(under, over);
+			}
+
+			return entropy_before - entropy_after;
+
+		}
+	}
+
+	public double entropy(double under, double over) {
+
+		return -over / (over + under) * Math.log10(over / (over + under))
+				/ Math.log10(2) - under / (over + under)
+				* Math.log10(under / (over + under)) / Math.log10(2);
 	}
 
 	public Object mean(Search search, String attrName) {
 		Map<Object, Double> map = search.valuesFor(attrName, true);
 		Iterator<Object> keyIterator = map.keySet().iterator();
-		Object median = null;
+
+		Object mean = null;
 
 		int count = 0;
 		int values = 0;
@@ -112,5 +123,21 @@ public class GainCalculator {
 			count += map.get(key);
 		}
 		return (int) Math.floor(values * 1.0f / count);
+	}
+
+	public Object median(Search search, String attrName) {
+		Map<Object, Double> map = search.valuesFor(attrName, true);
+		Iterator<Object> keyIterator = map.keySet().iterator();
+
+		Object median = null;
+
+		for (int i = 0; i < map.size() / 2 + 1; i++) {
+			Object key = keyIterator.next();
+			if (i == map.size() / 2) {
+				median = key;
+			}
+
+		}
+		return median;
 	}
 }
