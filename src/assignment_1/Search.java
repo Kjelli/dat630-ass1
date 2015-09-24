@@ -11,15 +11,16 @@ import java.util.Map.Entry;
 
 public class Search {
 	// The list containing the original adults to search in.
-	private ArrayList<Adult> originalList;
+	private List<Adult> originalList;
 	// The list storing all results so far
-	private ArrayList<Adult> results = new ArrayList<Adult>();
+	private List<Adult> results = new ArrayList<Adult>();
 	// The list storing all filters used in the search
-	private ArrayList<Filter> filters = new ArrayList<Filter>();
+	private List<Filter> filters = new ArrayList<Filter>();
 
 	// Set the list of which to search in
-	public Search from(ArrayList<Adult> list) {
-		this.originalList = list;
+	public Search from(List<Adult> list) {
+		originalList = new ArrayList<Adult>();
+		originalList.addAll(list);
 		return this;
 	}
 
@@ -101,7 +102,7 @@ public class Search {
 	}
 
 	// Retrieve the filters
-	public ArrayList<Filter> getFilters() {
+	public List<Filter> getFilters() {
 		return filters;
 	}
 
@@ -133,7 +134,7 @@ public class Search {
 	}
 
 	// Retrieve the list
-	public ArrayList<Adult> toList() {
+	public List<Adult> toList() {
 		return results;
 	}
 }

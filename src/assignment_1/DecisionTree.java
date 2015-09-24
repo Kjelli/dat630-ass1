@@ -1,21 +1,11 @@
 package assignment_1;
 
-import static assignment_1.Main.CAPITAL_GAIN;
-import static assignment_1.Main.EDUCATION;
-import static assignment_1.Main.EDUCATION_NUM;
-import static assignment_1.Main.HOURS_PER_WEEK;
-import static assignment_1.Main.MARITAL_STATUS;
-import static assignment_1.Main.NATIVE_COUNTRY;
-import static assignment_1.Main.OCCUPATION;
-import static assignment_1.Main.OVER50K;
-import static assignment_1.Main.RACE;
-import static assignment_1.Main.RELATIONSHIP;
-import static assignment_1.Main.SEX;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static assignment_1.Main.*;
 
 public class DecisionTree {
 	static final int POSITIVE = 0, NEGATIVE = 1;
@@ -113,6 +103,10 @@ public class DecisionTree {
 		float score = 0.0f;
 		if (a.get(NATIVE_COUNTRY).equals("United-States")) {
 			score += -1;
+		}
+
+		if ((int) a.get(AGE) < 32) {
+			score += -2;
 		}
 
 		if (a.get(EDUCATION).equals("HS-grad")) {

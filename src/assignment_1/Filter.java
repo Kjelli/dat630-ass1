@@ -138,16 +138,16 @@ public class Filter {
 					.equals(value));
 			break;
 		case LESS_THAN:
-			result = (Integer) a.get(attributeName) < (Integer) value;
+			result = (int) a.get(attributeName) < (double) (value)*1.0f;
 			break;
 		case LESS_OR_EQUAL_TO:
-			result = (Integer) a.get(attributeName) <= (Integer) value;
+			result = (int) a.get(attributeName) < (double) (value)*1.0f;
 			break;
 		case GREATER_THAN:
-			result = (Integer) a.get(attributeName) > (Integer) value;
+			result = (int) a.get(attributeName) >= (double) (value)*1.0f;
 			break;
 		case GREATER_OR_EQUAL_TO:
-			result = (Integer) a.get(attributeName) >= (Integer) value;
+			result = (int) a.get(attributeName) >= (double) (value)*1.0f;
 			break;
 		default:
 			throw new IllegalArgumentException();

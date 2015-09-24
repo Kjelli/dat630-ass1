@@ -5,6 +5,7 @@ import static assignment_1.Adult.ATT;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -13,8 +14,8 @@ import assignment_1.DecisionTree.DecisionTreeResult;
 
 public class Main {
 
-	static final String AGE = ATT[0], WORKCLASS = ATT[1], FNLWGT = ATT[2],
-			EDUCATION = ATT[3], EDUCATION_NUM = ATT[4],
+	public static final String AGE = ATT[0], WORKCLASS = ATT[1],
+			FNLWGT = ATT[2], EDUCATION = ATT[3], EDUCATION_NUM = ATT[4],
 			MARITAL_STATUS = ATT[5], OCCUPATION = ATT[6],
 			RELATIONSHIP = ATT[7], RACE = ATT[8], SEX = ATT[9],
 			CAPITAL_GAIN = ATT[10], CAPITAL_LOSS = ATT[11],
@@ -29,18 +30,24 @@ public class Main {
 		boolean training = true;
 		data = readLines(file);
 
-		// search();
+		search();
 
-		DecisionTreeResult result = new DecisionTree(training, outputFilename).estimate(data);
-		System.out
-				.println(result == null ? "Currently not in training set.. see output"
-						: result);
+		DecisionTreeResult result = new DecisionTree(training, outputFilename)
+				.estimate(data);
+
+		GainCalculator gc = new GainCalculator();
+
+		double gain = gc.computeGain(data, AGE);
+		System.out.println(gain);
+		// System.out
+		// .println(result == null ?
+		// "Currently not in training set.. see output"
+		// : result);
 
 	}
 
-	@SuppressWarnings("unused")
 	private static void search() {
-		// Search search = new Search().from(data)
+		Search search = new Search().from(data)
 		// .filter().attribute(HOURS_PER_WEEK).greaterOrEqualTo(40)
 		// .filter().attribute(EDUCATION).either("Bachelors","HS-grad")
 		// .filter().attribute(EDUCATION_NUM).greaterOrEqualTo(10)
@@ -55,7 +62,7 @@ public class Main {
 		// .filter().attribute(RELATIONSHIP).equalTo("Wife")
 		// .filter().attribute(OVER50K).equalTo(true)
 		// .filter().attribute(SEX).equalTo("Female")
-		// .search();
+				.search();
 
 		// Search search2 = new Search().from(data)
 		// .filter().attribute(OVER50K).equalTo(false)
@@ -72,7 +79,7 @@ public class Main {
 
 		// printResultsMeta(search);
 
-		// printAttributeResults(search, SEX, 3);
+		// printAttributeResults(search, AGE, 3200);
 
 		// printHighCorrelations(search, 99);
 	}
@@ -91,7 +98,6 @@ public class Main {
 			bs.append(entry.getKey() + "\n");
 			if (++count > take) {
 				bs.append("...\n\nOmitted " + (map.size() - count) + " values");
-				System.out.println(bs.toString());
 			}
 		}
 
@@ -111,7 +117,7 @@ public class Main {
 		for (Entry<Object, Double> entry : map.entrySet()) {
 			if (++count > take) {
 				bs.append("...\n\nOmitted " + (map.size() - count) + " values");
-				System.out.println(bs.toString());
+				break;
 			}
 			double ratio = entry.getValue() * 100.0f / data.size();
 			double relratio = entry.getValue() * 100.0f
@@ -130,7 +136,7 @@ public class Main {
 		String divider = "=========================";
 		String divider2 = "-------------------------";
 
-		ArrayList<Adult> searchResults = search.toList();
+		List<Adult> searchResults = search.toList();
 
 		bs.append(divider + "\nFilters:\n\n");
 		for (Filter filter : search.getFilters()) {
