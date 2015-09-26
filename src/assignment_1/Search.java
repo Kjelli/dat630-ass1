@@ -24,6 +24,23 @@ public class Search {
 		return this;
 	}
 
+	public Search runThrough(DecisionTree tree, boolean over50k) {
+		if (originalList == null) {
+			throw new NullPointerException("Search has no list!");
+		}
+
+		ArrayList<Adult> matches = new ArrayList<>();
+
+		for (Adult adult : originalList) {
+			if (tree.predict(adult) ^ !over50k) {
+				matches.add(adult);
+			}
+		}
+
+		results = matches;
+		return this;
+	}
+
 	// Initiate a new filter. Note: Returns a filter object to be used in a
 	// fluent API manner, and returns this search object when the filter is
 	// built
@@ -57,7 +74,7 @@ public class Search {
 									"(%.2f%% of total) [%.2f%% of hits]",
 									ratio, relratio), value);
 		}
-		correlations = sort(correlations);
+		correlations = MapSort.sort(correlations);
 		return correlations;
 	}
 
@@ -68,38 +85,15 @@ public class Search {
 
 		for (Adult a : results) {
 			Object key = a.get(attributeName);
-			
+
 			map.put(key, map.get(key) == null ? 1 : map.get(key) + 1);
 		}
 
 		// Sort
 		if (sort)
-			map = sort(map);
+			map = MapSort.sort(map);
 
 		return map;
-	}
-
-	// Sort a map by the values.
-	private Map<Object, Double> sort(Map<Object, Double> map) {
-
-		List<Entry<Object, Double>> entries = new LinkedList<Entry<Object, Double>>(
-				map.entrySet());
-		Collections.sort(entries, new Comparator<Entry<Object, Double>>() {
-			@Override
-			public int compare(Entry<Object, Double> entry1,
-					Entry<Object, Double> entry2) {
-				if (entry1.getKey() instanceof String
-						&& ((String) entry1.getKey()).equals("undefined"))
-					return 1;
-				return Double.compare(entry2.getValue(), entry1.getValue());
-			}
-		});
-
-		Map<Object, Double> sorted = new LinkedHashMap<Object, Double>();
-		for (Entry<Object, Double> entry : entries) {
-			sorted.put(entry.getKey(), entry.getValue());
-		}
-		return sorted;
 	}
 
 	// Retrieve the filters
@@ -115,8 +109,10 @@ public class Search {
 		}
 
 		ArrayList<Adult> matches = new ArrayList<>();
-
-		adults: for (Adult adult : originalList) {
+		if(results == null || results.isEmpty()){
+			results = originalList;
+		}
+		adults: for (Adult adult : results) {
 			boolean match = true;
 			for (Filter f : filters) {
 				if (!f.match(adult).result()) {

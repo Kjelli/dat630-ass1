@@ -141,10 +141,10 @@ public class Filter {
 			result = (int) a.get(attributeName) < (int) value;
 			break;
 		case LESS_OR_EQUAL_TO:
-			result = (int) a.get(attributeName) < (int) (value);
+			result = (int) a.get(attributeName) <= (int) (value);
 			break;
 		case GREATER_THAN:
-			result = (int) a.get(attributeName) >= (int) (value);
+			result = (int) a.get(attributeName) > (int) (value);
 			break;
 		case GREATER_OR_EQUAL_TO:
 			result = (int) a.get(attributeName) >= (int) (value);

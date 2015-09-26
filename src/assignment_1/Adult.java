@@ -86,6 +86,10 @@ public class Adult {
 			}
 		}
 	}
+	
+	public boolean is(String attributeName, Object value){
+		return get(attributeName).equals(value);
+	}
 
 	public Object get(String attributeName) {
 		return attributes.get(attributeName);

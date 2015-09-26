@@ -23,69 +23,55 @@ public class Main {
 	static ArrayList<Adult> data;
 
 	public static void main(String[] args) {
-		File file = new File("adult.data");
+		File file = new File("adult.test");
 		String outputFilename = "output/task1.out";
-		boolean training = true;
+		boolean training = false;
 		data = readLines(file);
 
-		//search();
+		DecisionTree gt = new GainTree(training, outputFilename);
 
-		// DecisionTreeResult result = new GainTree(training, outputFilename)
-		// .estimate(data);
-		
-		//System.out.println(new GainCalculator().computeGain(data, OCCUPATION));
-		
-		
-		for (String s : ATT) {
-			double gain = new GainCalculator().computeGain(data, s);
-			System.out.println(s+": "+gain);
-		}
-		
-		
-		
-		// System.out
-		// .println(result == null ?
-		// "Currently not in training set.. see output"
-		// : result);
+		DecisionTreeResult result = gt.estimate(data);
+		System.out
+				.println(result == null ? "Currently not in training set.. see output"
+						: result);
 
-	}
+		// System.out.println(new GainCalculator().computeGain(data,
+		// OCCUPATION));
 
-	private static void search() {
-		Search search = new Search().from(data)
-		// .filter().attribute(HOURS_PER_WEEK).greaterOrEqualTo(40)
-		// .filter().attribute(EDUCATION).either("Bachelors","HS-grad")
-		// .filter().attribute(EDUCATION_NUM).greaterOrEqualTo(10)
-		// .filter().attribute(SEX).equalTo("Male")
-		// .filter().attribute(OCCUPATION).either("Exec-managerial","Prof-specialty","Sales")
-		// .filter().attribute(CAPITAL_LOSS).lessOrEqualTo(0)
-		// .filter().attribute(CAPITAL_GAIN).greaterThan(0)
-		// .filter().attribute(MARITAL_STATUS).equalTo("Divorced")
-		// .filter().attribute(NATIVE_COUNTRY).not().equalTo("United-States")
-		// .filter().attribute(RACE).equalTo("White")
-		// .filter().attribute(AGE).not().greaterThan(19)
-		// .filter().attribute(RELATIONSHIP).equalTo("Wife")
-		// .filter().attribute(OVER50K).equalTo(true)
-		// .filter().attribute(SEX).equalTo("Female")
-				.search();
+		// System.out.println(NATIVE_COUNTRY+": "+new
+		// GainCalculator().computeGain(data, NATIVE_COUNTRY));
 
-		// Search search2 = new Search().from(data)
-		// .filter().attribute(OVER50K).equalTo(false)
-		// .search();
+		Search s = new Search().from(data).runThrough(gt, true).filter()
+				.attribute(SEX).equalTo("Female")
+				// .filter().attribute(MARITAL_STATUS).equalTo("Married-civ-spouse")
+				// .filter().attribute(RELATIONSHIP).equalTo("Wife")
+				// .filter().attribute(WORKCLASS).equalTo("Without-pay")
+				// .filter().attribute(CAPITAL_LOSS).greaterThan(0)
+				// .filter().attribute(CAPITAL_GAIN).greaterThan(0)
+				// .filter().attribute(CAPITAL_GAIN).lessThan(7000)
+				// .filter().attribute(AGE).lessThan(30)
+				// .filter().attribute(AGE).greaterThan(65)
+				// .filter().attribute(NATIVE_COUNTRY).equalTo("El-Salvador")
+				.filter().attribute(EDUCATION_NUM).greaterThan(15)
+				// .filter().attribute(RELATIONSHIP).equalTo("Not-in-family")
+				// .filter().attribute(HOURS_PER_WEEK).lessThan(32)
+				// .filter().attribute(OCCUPATION).equalTo("Prof-specialty")
+				// .filter().attribute(MARITAL_STATUS).equalTo("Divorced")
+				.filter().attribute(OVER50K).equalTo(true).search();
 
-		// String C = HOURS_PER_WEEK;
+		//printResultsMeta(s);
+		//printHighCorrelations(s, 36000);
+		// printAttributeResults(s,AGE, 99999);
 
-		// System.out.println("Over50k");
-		// printResultsMeta(search);
-		// Histogram.drawCategorical(search, C);
-		// System.out.println("Under 50k");
-		// printResultsMeta(search2);
-		// Histogram.drawCategorical(search2, C);
+		// System.out.println("Computing gains.");
+		//
+		// @SuppressWarnings("unchecked")
+		// Map<Object, Double> gains = new GainCalculator().computeGains(
+		// s.toList(), ATT);
+		// for (Entry<Object, Double> entry : gains.entrySet()) {
+		// System.out.println(entry.getKey() + ": " + entry.getValue());
+		// }
 
-		// printResultsMeta(search);
-
-		printAttributeResults(search, WORKCLASS, 36000);
-
-		// printHighCorrelations(search, 99);
 	}
 
 	@SuppressWarnings("unused")

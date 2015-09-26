@@ -10,7 +10,22 @@ import java.util.Map.Entry;
 
 public class GainCalculator {
 
+	public Map computeGains(List<Adult> data, String[] attrNames) {
+		Map<Object, Double> map = new HashMap<>();
+		for (String s : attrNames) {
+			map.put(s, computeGain(data, s));
+		}
+		
+		map = MapSort.sort(map);
+		
+		return map;
+	}
+
 	public double computeGain(List<Adult> data, String attrName) {
+
+		if (attrName.equals(OVER50K)) {
+			return -1;
+		}
 		Search search = new Search().from(data).search();
 		boolean numeric = false;
 		for (int i = 0; i < Adult.ATT.length; i++) {
@@ -43,20 +58,21 @@ public class GainCalculator {
 			Object mean = mean(search, attrName);
 
 			double underPlus = new Search().from(data).filter()
-					.attribute(attrName).lessThan(mean).filter()
+					.attribute(attrName).lessThan(mean).search().filter()
 					.attribute(OVER50K).equalTo(true).search().toList().size();
 
 			double overPlus = new Search().from(data).filter()
-					.attribute(attrName).greaterThan(mean).filter()
+					.attribute(attrName).greaterThan(mean).search().filter()
 					.attribute(OVER50K).equalTo(true).search().toList().size();
 
 			double underMinus = new Search().from(data).filter()
-					.attribute(attrName).lessThan(mean).filter()
+					.attribute(attrName).lessThan(mean).search().filter()
 					.attribute(OVER50K).equalTo(false).search().toList().size();
 
 			double overMinus = new Search().from(data).filter()
-					.attribute(attrName).greaterOrEqualTo(mean).filter()
-					.attribute(OVER50K).equalTo(false).search().toList().size();
+					.attribute(attrName).greaterOrEqualTo(mean).search()
+					.filter().attribute(OVER50K).equalTo(false).search()
+					.toList().size();
 
 			double under_before = new Search().from(data).filter()
 					.attribute(OVER50K).equalTo(false).search().toList().size();
@@ -101,17 +117,16 @@ public class GainCalculator {
 	}
 
 	public double entropy(double under, double over) {
-
-		return -over / (over + under) * Math.log10(over / (over + under))
-				/ Math.log10(2) - under / (over + under)
-				* Math.log10(under / (over + under)) / Math.log10(2);
+		double result = -over / (over + under)
+				* Math.log10(over / (over + under)) / Math.log10(2) - under
+				/ (over + under) * Math.log10(under / (over + under))
+				/ Math.log10(2);
+		return Double.isNaN(result) ? 1 : result;
 	}
 
 	public Object mean(Search search, String attrName) {
 		Map<Object, Double> map = search.valuesFor(attrName, true);
 		Iterator<Object> keyIterator = map.keySet().iterator();
-
-		Object mean = null;
 
 		int count = 0;
 		int values = 0;
