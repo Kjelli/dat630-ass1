@@ -16,6 +16,7 @@ public class GainTree extends DecisionTree {
 		}
 
 		if ((int) a.get(AGE) < 29) {
+
 			return false;
 		}
 		if ((int) a.get(AGE) > 72) {
@@ -45,18 +46,18 @@ public class GainTree extends DecisionTree {
 				|| a.get(NATIVE_COUNTRY).equals("Laos")) {
 			return false;
 		}
-		if ((int) a.get(EDUCATION_NUM) < 10) {
-			return false;
-		}
 
 		if (a.get(SEX).equals("Male")) {
-
+			
 			if (a.get(MARITAL_STATUS).equals("Married-civ-spouse")
 					|| a.get(MARITAL_STATUS).equals("Married-AF-spouse")) {
 				if ((int) a.get(HOURS_PER_WEEK) < 32) {
+
 					return false;
 				}
+
 				if ((int) a.get(EDUCATION_NUM) > 12) {
+					
 					return true;
 				}
 
@@ -66,6 +67,10 @@ public class GainTree extends DecisionTree {
 
 				if (a.is(WORKCLASS, "Self-emp-inc")) {
 					return true;
+				}
+
+				if (a.is(WORKCLASS, "Self-emp-not-inc")) {
+					return false;
 				}
 
 				if (a.get(OCCUPATION).equals("Tech-support")) {
@@ -94,7 +99,7 @@ public class GainTree extends DecisionTree {
 						return true;
 					}
 
-					if ((int) a.get(CAPITAL_GAIN) > 4000) {
+					if ((int) a.get(CAPITAL_GAIN) > 3000) {
 						return true;
 					}
 
@@ -105,15 +110,15 @@ public class GainTree extends DecisionTree {
 		}
 
 		if (a.get(SEX).equals("Female")) {
-			if ((int) a.get(HOURS_PER_WEEK) < 32) {
+			if ((int) a.get(AGE) > 54) {
+
+				return false;
+			}
+			if ((int) a.get(EDUCATION_NUM) < 10) {
 				return false;
 			}
 			if (a.is(RELATIONSHIP, "Wife")) {
 				return true;
-			}
-
-			if (a.is(WORKCLASS, "Self-emp-not-inc")) {
-				return false;
 			}
 
 			if (a.get(OCCUPATION).equals("Prof-specialty")
@@ -124,11 +129,14 @@ public class GainTree extends DecisionTree {
 			}
 
 			if ((int) a.get(EDUCATION_NUM) > 15) {
-
+				if (a.is(WORKCLASS, "Self-emp-not-inc")) {
+					return false;
+				}
 				return true;
 			}
 
 			if (a.is(MARITAL_STATUS, "Widowed")) {
+
 				return false;
 			}
 

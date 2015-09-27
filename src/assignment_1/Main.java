@@ -41,26 +41,26 @@ public class Main {
 		// System.out.println(NATIVE_COUNTRY+": "+new
 		// GainCalculator().computeGain(data, NATIVE_COUNTRY));
 
-		Search s = new Search().from(data).runThrough(gt, true).filter()
-				.attribute(SEX).equalTo("Female")
+		Search s = new Search().from(data).runThrough(gt, true)
+				.filter().attribute(SEX).equalTo("Female")
 				// .filter().attribute(MARITAL_STATUS).equalTo("Married-civ-spouse")
 				// .filter().attribute(RELATIONSHIP).equalTo("Wife")
 				// .filter().attribute(WORKCLASS).equalTo("Without-pay")
 				// .filter().attribute(CAPITAL_LOSS).greaterThan(0)
 				// .filter().attribute(CAPITAL_GAIN).greaterThan(0)
 				// .filter().attribute(CAPITAL_GAIN).lessThan(7000)
-				// .filter().attribute(AGE).lessThan(30)
+				//.filter().attribute(AGE).lessThan(29)
 				// .filter().attribute(AGE).greaterThan(65)
 				// .filter().attribute(NATIVE_COUNTRY).equalTo("El-Salvador")
-				.filter().attribute(EDUCATION_NUM).greaterThan(15)
+				// .filter().attribute(EDUCATION_NUM).greaterThan(15)
 				// .filter().attribute(RELATIONSHIP).equalTo("Not-in-family")
-				// .filter().attribute(HOURS_PER_WEEK).lessThan(32)
+				// .filter().attribute(HOURS_PER_WEEK).greaterThan(40)
 				// .filter().attribute(OCCUPATION).equalTo("Prof-specialty")
 				// .filter().attribute(MARITAL_STATUS).equalTo("Divorced")
 				.filter().attribute(OVER50K).equalTo(true).search();
 
-		//printResultsMeta(s);
-		//printHighCorrelations(s, 36000);
+		printResultsMeta(s);
+		printHighCorrelations(s, 36000);
 		// printAttributeResults(s,AGE, 99999);
 
 		// System.out.println("Computing gains.");
